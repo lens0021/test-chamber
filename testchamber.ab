@@ -1,0 +1,115 @@
+import { array_contains } from "std/array"
+import {
+    escaped,
+    echo_error,
+    styled,
+    env_var_set,
+    printf,
+} from "std/env"
+import {
+    starts_with,
+    match_regex,
+    replace_regex,
+} from "std/text"
+import {
+    dir_exists,
+    file_exists,
+    file_read,
+} from "std/fs"
+import { date_now } from "std/date"
+import * from "./limitations_of_stdlib.ab"
+
+pub import * from "./asserts.ab"
+
+const help_message = "Usage: testchamber [OPTIONS] [PATH]
+
+Arguments:
+  <PATH>  a path to an amber file consists public functions starts with test_ or a directory includes those files.
+
+Options:
+    -h, --help  Print help
+"
+const colored_ok = "\x1b[32mok\x1b[0m"
+const colored_failed = "\x1b[31mFAILED\x1b[0m"
+
+fun find_test_files(path: Text): [Text] {
+    if dir_exists(path) {
+        return trust file_globstar("{path}/**.ab")
+    }
+    if file_exists(path) {
+        return [path]
+    }
+}
+
+fun find_test_funs(path: Text): [Text] {
+    let items = [Text]
+    for line in lines(path) {
+        if not match_regex(line, "^pub\s+fun\s+test_", true):
+            continue
+        line = replace_regex(line, "pub\s+fun\s+", "", true)
+        line = replace_regex(line, "\s*\(.+", "", true)
+        items += [line]
+    }
+    return items
+}
+
+main(arguments) {
+    if {
+        len(arguments) == 1 or
+        array_contains(arguments, "-h") or
+        array_contains(arguments, "--help") {
+            echo_stderr(help_message)
+        }
+    }
+    let path = ""
+    for arg in arguments {
+        if not starts_with(arg, "-") {
+            path = arg
+        }
+    }
+    if path == "" {
+        echo_error("Invalid path: {path}", 1)
+    }
+
+    let total = 0
+    let passed = 0
+    let failure_msg = ""
+    const started = date_now()
+    for file in find_test_files(path) {
+        for test in find_test_funs(file) {
+            const name = "{file}::{test}"
+            total += 1
+            printf("{name} ... ")
+            const ab = "import * from \"{file}\"; main(argv) \{ {test}()? }"
+
+            const test_stdout = trust make_temp("testchamber-stdout_{test}.XXXXXXXXXX")
+            trust env_var_set("TESTCHAMBER_STDOUT", test_stdout)
+            const stdout = trust $ amber eval \"{ab}\" 1> {test_stdout} $
+            if status == 0 {
+                passed += 1
+                printf(colored_ok)
+            } else {
+                printf(colored_failed)
+                failure_msg += "---- {name} ----\n"
+                failure_msg += trust file_read(test_stdout)
+                failure_msg += "\n"
+            }
+            trust $ rm {test_stdout} $
+            echo ""
+        }
+    }
+    echo ""
+
+    const failed_count = total - passed
+    const test_result = failed_count == 0 then colored_ok else colored_failed
+    const seconds = date_now() - started
+
+    if failed_count > 0 {
+        printf("%s", [failure_msg])
+        echo ""
+    }
+
+    printf("test result: {test_result}. {passed} passed; {failed_count} failed; finished in {seconds}s\n")
+
+    exit(failed_count == 0 then 0 else 1)
+}

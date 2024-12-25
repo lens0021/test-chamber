@@ -1,0 +1,53 @@
+import {
+    bold,
+    echo_error,
+    printf,
+    env_var_get,
+    is_command,
+} from "std/env"
+import { file_write, file_read } from "std/fs"
+import { ends_with } from "std/text"
+import { make_temp } from "./limitations_of_stdlib.ab"
+
+fun show_diff(left, right) {
+    if is_command("diff") {
+        trust {
+            bold("Diff")
+            const left_file = make_temp("testchamber-diff.XXXXXXXXXX")
+            const right_file = make_temp("testchamber-diff.XXXXXXXXXX")
+            file_write(left_file, left)
+            file_write(right_file, right)
+            $ diff -y {left_file} {right_file} $
+            $ rm {left_file} {right_file} $
+        }
+    } else {
+        printf(bold("Left") + "\n")
+        echo left
+        printf(bold("Right") + "\n")
+        echo right
+    }
+}
+
+pub fun assert_eq(left, right, msg = "") {
+    if left == right {
+        return 0
+    }
+    if msg != "":
+        echo_error(msg, 0)
+    show_diff(left, right)
+    fail 1
+}
+
+pub fun assert_true(actual: Bool, msg: Text = ""): Num? {
+    return assert_eq(true, actual, msg)?
+}
+
+pub fun assert_false(actual: Bool, msg: Text = ""): Num? {
+    return assert_eq(false, actual, msg)?
+}
+
+/// This can be false passed
+pub fun assert_stdout(actual: Text, msg: Text = ""): Num? {
+    const recent_stdout = trust file_read(trust env_var_get("TESTCHAMBER_STDOUT"))
+    return assert_true(ends_with(recent_stdout, actual), msg)?
+}
