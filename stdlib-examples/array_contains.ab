@@ -1,5 +1,5 @@
 import * from "std/array"
-import * from "../testchamber.ab"
+import * from "github.com/lens0021/testchamber/main/src/asserts.ab"
 
 pub fun test_empty_num_array(): Num? {
     const array = [Num]

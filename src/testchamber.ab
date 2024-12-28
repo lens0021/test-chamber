@@ -17,7 +17,11 @@ import {
     file_read,
 } from "std/fs"
 import { date_now } from "std/date"
-import * from "./limitations_of_stdlib.ab"
+import {
+    echo_stderr,
+    file_globstar,
+    make_temp,
+} from "github.com/lens0021/amber-snippets/main/main.ab"
 
 pub import * from "./asserts.ab"
 

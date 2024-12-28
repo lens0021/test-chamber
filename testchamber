@@ -1,0 +1,424 @@
+#!/usr/bin/env bash
+# Written in [Amber](https://amber-lang.com/)
+# version: 0.4.0-alpha
+# date: 2024-12-28 20:02:00
+array_find__0_v0() {
+
+# bshchk (https://git.blek.codes/blek/bshchk)
+deps=('[' '[' 'return' 'true' 'bc' 'sed' 'return' 'bc' 'sed' 'return' 'return' '[' 'sed' '[' 'bc' 'sed' 'sed' 'return' 'sed' 'return' 'return' 'return' '[' 'sed' '[' 'bc' 'sed' 'sed' 'sed' '[' '[' 'return' 'return' '[' 'return' '[' '[' 'return' 'return' '[' '[' 'return' 'return' '[' 'return' 'return' '[' 'return' '[' 'bc' 'sed' 'exit' 'date' 'return' 'mktemp' '[' 'return' 'return' 'shopt' 'bc' 'sed' 'shopt' 'eval' '[' 'return' '[' 'shopt' 'shopt' 'return' '[' 'return' '[' 'return' '[' 'bc' 'sed' 'continue' 'return' '[' 'bc' 'sed' 'bc' 'sed' 'bc' 'sed' '[' 'bc' 'sed' '[' '[' 'bc' 'sed' 'amber' '[' 'bc' 'sed' 'bc' 'sed' 'rm' 'bc' 'sed' '[' 'bc' 'sed' 'bc' 'sed' '[' 'bc' 'sed' 'exit' '[' 'bc' 'sed')
+non_ok=()
+
+for d in $deps
+do
+    if ! command -v $d > /dev/null 2>&1; then
+        non_ok+=$d
+    fi
+done
+
+if (( ${#non_ok[@]} != 0 )); then
+    >&2 echo "RDC Failed!"
+    >&2 echo "  This program requires these commands:"
+    >&2 echo "  > $deps"
+    >&2 echo "    --- "
+    >&2 echo "  From which, these are missing:"
+    >&2 echo "  > $non_ok"
+    >&2 echo "Make sure that those are installed and are present in \$PATH."
+    exit 1
+fi
+
+unset non_ok
+unset deps
+# Dependencies are OK at this point
+
+
+    local array=("${!1}")
+    local value=$2
+    index=0
+    for element in "${array[@]}"; do
+        if [ $(
+            [ "_${value}" != "_${element}" ]
+            echo $?
+        ) != 0 ]; then
+            __AF_array_find0_v0=${index}
+            return 0
+        fi
+        ((index++)) || true
+    done
+    __AF_array_find0_v0=$(echo '-' 1 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+    return 0
+}
+array_contains__2_v0() {
+    local array=("${!1}")
+    local value=$2
+    array_find__0_v0 array[@] "${value}"
+    __AF_array_find0_v0__26_18="$__AF_array_find0_v0"
+    local result="$__AF_array_find0_v0__26_18"
+    __AF_array_contains2_v0=$(echo ${result} '>=' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+    return 0
+}
+replace__10_v0() {
+    local source=$1
+    local search=$2
+    local replace=$3
+    __AF_replace10_v0="${source//${search}/${replace}}"
+    return 0
+}
+replace_regex__12_v0() {
+    local source=$1
+    local search=$2
+    local replace=$3
+    local extended=$4
+    replace__10_v0 "${search}" "/" "\/"
+    __AF_replace10_v0__16_18="${__AF_replace10_v0}"
+    search="${__AF_replace10_v0__16_18}"
+    replace__10_v0 "${replace}" "/" "\/"
+    __AF_replace10_v0__17_19="${__AF_replace10_v0}"
+    replace="${__AF_replace10_v0__17_19}"
+    if [ ${extended} != 0 ]; then
+        # GNU sed versions 4.0 through 4.2 support extended regex syntax,
+        # but only via the "-r" option; use that if the version information
+        # contains "GNU sed".
+        re='\bCopyright\b.+\bFree Software Foundation\b'
+        [[ $(sed --version 2>/dev/null) =~ $re ]]
+        __AS=$?
+        local flag=$(if [ $(echo $__AS '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then echo "-r"; else echo "-E"; fi)
+        __AMBER_VAL_0=$(echo "${source}" | sed "${flag}" -e "s/${search}/${replace}/g")
+        __AS=$?
+        __AF_replace_regex12_v0="${__AMBER_VAL_0}"
+        return 0
+    else
+        __AMBER_VAL_1=$(echo "${source}" | sed -e "s/${search}/${replace}/g")
+        __AS=$?
+        __AF_replace_regex12_v0="${__AMBER_VAL_1}"
+        return 0
+    fi
+}
+split__13_v0() {
+    local text=$1
+    local delimiter=$2
+    __AMBER_ARRAY_2=()
+    local result=("${__AMBER_ARRAY_2[@]}")
+    IFS="${delimiter}" read -rd '' -a result < <(printf %s "$text")
+    __AS=$?
+    __AF_split13_v0=("${result[@]}")
+    return 0
+}
+split_lines__14_v0() {
+    local text=$1
+    split__13_v0 "${text}" "
+"
+    __AF_split13_v0__40_12=("${__AF_split13_v0[@]}")
+    __AF_split_lines14_v0=("${__AF_split13_v0__40_12[@]}")
+    return 0
+}
+match_regex__27_v0() {
+    local source=$1
+    local search=$2
+    local extended=$3
+    replace__10_v0 "${search}" "/" "\/"
+    __AF_replace10_v0__130_18="${__AF_replace10_v0}"
+    search="${__AF_replace10_v0__130_18}"
+    local output=""
+    if [ ${extended} != 0 ]; then
+        # GNU sed versions 4.0 through 4.2 support extended regex syntax,
+        # but only via the "-r" option; use that if the version information
+        # contains "GNU sed".
+        re='\bCopyright\b.+\bFree Software Foundation\b'
+        [[ $(sed --version 2>/dev/null) =~ $re ]]
+        __AS=$?
+        local flag=$(if [ $(echo $__AS '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then echo "-r"; else echo "-E"; fi)
+        __AMBER_VAL_3=$(echo "${source}" | sed "${flag}" -ne "/${search}/p")
+        __AS=$?
+        output="${__AMBER_VAL_3}"
+    else
+        __AMBER_VAL_4=$(echo "${source}" | sed -ne "/${search}/p")
+        __AS=$?
+        output="${__AMBER_VAL_4}"
+    fi
+    if [ $(
+        [ "_${output}" == "_" ]
+        echo $?
+    ) != 0 ]; then
+        __AF_match_regex27_v0=1
+        return 0
+    fi
+    __AF_match_regex27_v0=0
+    return 0
+}
+starts_with__30_v0() {
+    local text=$1
+    local prefix=$2
+    __AMBER_VAL_5=$(if [[ "${text}" == "${prefix}"* ]]; then
+        echo 1
+    fi)
+    __AS=$?
+    local result="${__AMBER_VAL_5}"
+    __AF_starts_with30_v0=$(
+        [ "_${result}" != "_1" ]
+        echo $?
+    )
+    return 0
+}
+dir_exists__42_v0() {
+    local path=$1
+    [ -d "${path}" ]
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_dir_exists42_v0=0
+        return 0
+    fi
+    __AF_dir_exists42_v0=1
+    return 0
+}
+file_exists__43_v0() {
+    local path=$1
+    [ -f "${path}" ]
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_file_exists43_v0=0
+        return 0
+    fi
+    __AF_file_exists43_v0=1
+    return 0
+}
+file_read__44_v0() {
+    local path=$1
+    __AMBER_VAL_6=$(<"${path}")
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_file_read44_v0=''
+        return $__AS
+    fi
+    __AF_file_read44_v0="${__AMBER_VAL_6}"
+    return 0
+}
+env_var_set__100_v0() {
+    local name=$1
+    local val=$2
+    export $name="$val" 2>/dev/null
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_env_var_set100_v0=''
+        return $__AS
+    fi
+}
+printf__109_v0() {
+    local format=$1
+    local args=("${!2}")
+    args=("${format}" "${args[@]}")
+    __AS=$?
+    printf "${args[@]}"
+    __AS=$?
+}
+echo_error__119_v0() {
+    local message=$1
+    local exit_code=$2
+    __AMBER_ARRAY_7=("${message}")
+    printf__109_v0 "\x1b[1;3;97;41m%s\x1b[0m
+" __AMBER_ARRAY_7[@]
+    __AF_printf109_v0__162_5="$__AF_printf109_v0"
+    echo "$__AF_printf109_v0__162_5" >/dev/null 2>&1
+    if [ $(echo ${exit_code} '>' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
+        exit ${exit_code}
+    fi
+}
+date_now__132_v0() {
+    __AMBER_VAL_8=$(date +%s)
+    __AS=$?
+    __AF_date_now132_v0="${__AMBER_VAL_8}"
+    return 0
+}
+echo_stderr__137_v0() {
+    local text=$1
+    echo "${text}" >&2
+    __AS=$?
+}
+make_temp__138_v0() {
+    local template=$1
+    __AMBER_VAL_9=$(mktemp testchamber-diff.XXXXXXXXXX)
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_make_temp138_v0=''
+        return $__AS
+    fi
+    __AF_make_temp138_v0="${__AMBER_VAL_9}"
+    return 0
+}
+file_globstar__139_v0() {
+    local path=$1
+    shopt -q globstar
+    __AS=$?
+    local temp_globstar_enabled=$(echo $__AS '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+    shopt -s globstar >/dev/null 2>&1
+    __AS=$?
+    __AMBER_VAL_10=$(eval "for file in ${path}; do [ -e \"\$file\" ] && echo \"\$file\"; done")
+    __AS=$?
+    if [ $__AS != 0 ]; then
+        __AF_file_globstar139_v0=()
+        return $__AS
+    fi
+    local files="${__AMBER_VAL_10}"
+    if [ ${temp_globstar_enabled} != 0 ]; then
+        shopt -s globstar >/dev/null 2>&1
+        __AS=$?
+    else
+        shopt -u globstar >/dev/null 2>&1
+        __AS=$?
+    fi
+    split_lines__14_v0 "${files}"
+    __AF_split_lines14_v0__21_12=("${__AF_split_lines14_v0[@]}")
+    __AF_file_globstar139_v0=("${__AF_split_lines14_v0__21_12[@]}")
+    return 0
+}
+
+__0_help_message="Usage: testchamber [OPTIONS] [PATH]
+
+Arguments:
+  <PATH>  a path to an amber file consists public functions starts with test_ or a directory includes those files.
+
+Options:
+    -h, --help  Print help
+"
+__1_colored_ok="\x1b[32mok\x1b[0m"
+__2_colored_failed="\x1b[31mFAILED\x1b[0m"
+find_test_files__161_v0() {
+    local path=$1
+    dir_exists__42_v0 "${path}"
+    __AF_dir_exists42_v0__40_8="$__AF_dir_exists42_v0"
+    if [ "$__AF_dir_exists42_v0__40_8" != 0 ]; then
+        file_globstar__139_v0 "${path}/**.ab"
+        __AS=$?
+        __AF_file_globstar139_v0__41_22=("${__AF_file_globstar139_v0[@]}")
+        __AF_find_test_files161_v0=("${__AF_file_globstar139_v0__41_22[@]}")
+        return 0
+    fi
+    file_exists__43_v0 "${path}"
+    __AF_file_exists43_v0__43_8="$__AF_file_exists43_v0"
+    if [ "$__AF_file_exists43_v0__43_8" != 0 ]; then
+        __AMBER_ARRAY_11=("${path}")
+        __AF_find_test_files161_v0=("${__AMBER_ARRAY_11[@]}")
+        return 0
+    fi
+}
+find_test_funs__162_v0() {
+    local path=$1
+    __AMBER_ARRAY_12=()
+    local items=("${__AMBER_ARRAY_12[@]}")
+    while IFS= read -r line; do
+        match_regex__27_v0 "${line}" "^pub\s+fun\s+test_" 1
+        __AF_match_regex27_v0__51_16="$__AF_match_regex27_v0"
+        if [ $(echo '!' "$__AF_match_regex27_v0__51_16" | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
+            continue
+        fi
+        replace_regex__12_v0 "${line}" "pub\s+fun\s+" "" 1
+        __AF_replace_regex12_v0__53_16="${__AF_replace_regex12_v0}"
+        line="${__AF_replace_regex12_v0__53_16}"
+        replace_regex__12_v0 "${line}" "\s*\(.+" "" 1
+        __AF_replace_regex12_v0__54_16="${__AF_replace_regex12_v0}"
+        line="${__AF_replace_regex12_v0__54_16}"
+        __AMBER_ARRAY_13=("${line}")
+        items+=("${__AMBER_ARRAY_13[@]}")
+    done <"${path}"
+    __AF_find_test_funs162_v0=("${items[@]}")
+    return 0
+}
+declare -r arguments=("$0" "$@")
+array_contains__2_v0 arguments[@] "-h"
+__AF_array_contains2_v0__63_9="$__AF_array_contains2_v0"
+array_contains__2_v0 arguments[@] "--help"
+__AF_array_contains2_v0__64_9="$__AF_array_contains2_v0"
+if [ $(echo $(echo $(echo "${#arguments[@]}" '==' 1 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') '||' "$__AF_array_contains2_v0__63_9" | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') '||' "$__AF_array_contains2_v0__64_9" | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
+    echo_stderr__137_v0 "${__0_help_message}"
+    __AF_echo_stderr137_v0__65_13="$__AF_echo_stderr137_v0"
+    echo "$__AF_echo_stderr137_v0__65_13" >/dev/null 2>&1
+fi
+path=""
+for arg in "${arguments[@]}"; do
+    starts_with__30_v0 "${arg}" "-"
+    __AF_starts_with30_v0__70_16="$__AF_starts_with30_v0"
+    if [ $(echo '!' "$__AF_starts_with30_v0__70_16" | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
+        path="${arg}"
+    fi
+done
+if [ $(
+    [ "_${path}" != "_" ]
+    echo $?
+) != 0 ]; then
+    echo_error__119_v0 "Invalid path: ${path}" 1
+    __AF_echo_error119_v0__75_9="$__AF_echo_error119_v0"
+    echo "$__AF_echo_error119_v0__75_9" >/dev/null 2>&1
+fi
+total=0
+passed=0
+failure_msg=""
+date_now__132_v0
+__AF_date_now132_v0__81_21="$__AF_date_now132_v0"
+started="$__AF_date_now132_v0__81_21"
+find_test_files__161_v0 "${path}"
+__AF_find_test_files161_v0__82_17=("${__AF_find_test_files161_v0[@]}")
+for file in "${__AF_find_test_files161_v0__82_17[@]}"; do
+    find_test_funs__162_v0 "${file}"
+    __AF_find_test_funs162_v0__83_21=("${__AF_find_test_funs162_v0[@]}")
+    for test in "${__AF_find_test_funs162_v0__83_21[@]}"; do
+        name="${file}::${test}"
+        total=$(echo ${total} '+' 1 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+        __AMBER_ARRAY_14=("")
+        printf__109_v0 "${name} ... " __AMBER_ARRAY_14[@]
+        __AF_printf109_v0__86_13="$__AF_printf109_v0"
+        echo "$__AF_printf109_v0__86_13" >/dev/null 2>&1
+        ab="import * from \"${file}\"; main(argv) { ${test}()? }"
+        make_temp__138_v0 "testchamber-stdout_${test}.XXXXXXXXXX"
+        __AS=$?
+        __AF_make_temp138_v0__89_39="${__AF_make_temp138_v0}"
+        test_stdout="${__AF_make_temp138_v0__89_39}"
+        env_var_set__100_v0 "TESTCHAMBER_STDOUT" "${test_stdout}"
+        __AS=$?
+        __AF_env_var_set100_v0__90_19="$__AF_env_var_set100_v0"
+        echo "$__AF_env_var_set100_v0__90_19" >/dev/null 2>&1
+        __AMBER_VAL_15=$(amber eval "${ab}" 1>${test_stdout})
+        __AS=$?
+        stdout="${__AMBER_VAL_15}"
+        if [ $(echo $__AS '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
+            passed=$(echo ${passed} '+' 1 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+            __AMBER_ARRAY_16=("")
+            printf__109_v0 "${__1_colored_ok}" __AMBER_ARRAY_16[@]
+            __AF_printf109_v0__94_17="$__AF_printf109_v0"
+            echo "$__AF_printf109_v0__94_17" >/dev/null 2>&1
+        else
+            __AMBER_ARRAY_17=("")
+            printf__109_v0 "${__2_colored_failed}" __AMBER_ARRAY_17[@]
+            __AF_printf109_v0__96_17="$__AF_printf109_v0"
+            echo "$__AF_printf109_v0__96_17" >/dev/null 2>&1
+            failure_msg+="---- ${name} ----
+"
+            file_read__44_v0 "${test_stdout}"
+            __AS=$?
+            __AF_file_read44_v0__98_38="${__AF_file_read44_v0}"
+            failure_msg+="${__AF_file_read44_v0__98_38}"
+            failure_msg+="
+"
+        fi
+        rm ${test_stdout}
+        __AS=$?
+        echo ""
+    done
+done
+echo ""
+failed_count=$(echo ${total} '-' ${passed} | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+test_result=$(if [ $(echo ${failed_count} '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then echo "${__1_colored_ok}"; else echo "${__2_colored_failed}"; fi)
+date_now__132_v0
+__AF_date_now132_v0__109_21="$__AF_date_now132_v0"
+seconds=$(echo "$__AF_date_now132_v0__109_21" '-' ${started} | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+if [ $(echo ${failed_count} '>' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
+    __AMBER_ARRAY_18=("${failure_msg}")
+    printf__109_v0 "%s" __AMBER_ARRAY_18[@]
+    __AF_printf109_v0__112_9="$__AF_printf109_v0"
+    echo "$__AF_printf109_v0__112_9" >/dev/null 2>&1
+    echo ""
+fi
+__AMBER_ARRAY_19=("")
+printf__109_v0 "test result: ${test_result}. ${passed} passed; ${failed_count} failed; finished in ${seconds}s
+" __AMBER_ARRAY_19[@]
+__AF_printf109_v0__116_5="$__AF_printf109_v0"
+echo "$__AF_printf109_v0__116_5" >/dev/null 2>&1
+exit $(if [ $(echo ${failed_count} '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then echo 0; else echo 1; fi)
