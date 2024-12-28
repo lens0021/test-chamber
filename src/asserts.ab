@@ -46,8 +46,16 @@ pub fun assert_false(actual: Bool, msg: Text = ""): Num? {
     return assert_eq(false, actual, msg)?
 }
 
-/// This can be false passed
+/// This check the existancy of string in entire stdout.
+// Please includes random string to the search term.
 pub fun assert_stdout(actual: Text, msg: Text = ""): Num? {
     const recent_stdout = trust file_read(trust env_var_get("TESTCHAMBER_STDOUT"))
     return assert_true(ends_with(recent_stdout, actual), msg)?
+}
+
+/// This check the existancy of string in entire stderr.
+// Please includes random string to the search term.
+pub fun assert_stderr(actual: Text, msg: Text = ""): Num? {
+    const recent_stderr = trust file_read(trust env_var_get("TESTCHAMBER_STDERR"))
+    return assert_true(ends_with(recent_stderr, actual), msg)?
 }

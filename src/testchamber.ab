@@ -88,7 +88,9 @@ main(arguments) {
 
             const test_stdout = trust make_temp("testchamber-stdout_{test}.XXXXXXXXXX")
             trust env_var_set("TESTCHAMBER_STDOUT", test_stdout)
-            const stdout = trust $ amber eval \"{ab}\" 1> {test_stdout} $
+            const test_stderr = trust make_temp("testchamber-stderr_{test}.XXXXXXXXXX")
+            trust env_var_set("TESTCHAMBER_STDERR", test_stderr)
+            const stdout = trust $ amber eval \"{ab}\" 1>{test_stdout} 2>{test_stderr} $
             if status == 0 {
                 passed += 1
                 printf(colored_ok)
@@ -99,6 +101,7 @@ main(arguments) {
                 failure_msg += "\n"
             }
             trust $ rm {test_stdout} $
+            trust $ rm {test_stderr} $
             echo ""
         }
     }
