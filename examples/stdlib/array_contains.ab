@@ -1,0 +1,32 @@
+import * from "std/array"
+import * from "github.com/lens0021/testchamber/src/asserts.ab"
+
+pub fun test_empty_num_array(): Null? {
+    const array = [Num]
+    assert_false(array_contains(array, 0))?
+}
+
+pub fun test_empty_text_array(): Null? {
+    const array = [Text]
+    assert_false(array_contains(array, " "))?
+}
+
+pub fun test_exact_match(): Null? {
+    const array = ["apple", "banana cherry"]
+    assert_true(array_contains(array, "banana cherry"))?
+}
+
+pub fun test_partial_match_with_expanded(): Null? {
+    const array = ["foo", "bar", "baz"]
+    assert_false(array_contains(array, "oo ba"))?
+}
+
+pub fun test_prefix_match(): Null? {
+    const array = ["apple", "banana cherry"]
+    assert_false(array_contains(array, "banana"))?
+}
+
+pub fun test_text_array(): Null? {
+    const array = ["apple", "banana", "cherry"]
+    assert_true(array_contains(array, "banana"))?
+}

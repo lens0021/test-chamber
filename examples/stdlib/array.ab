@@ -1,0 +1,45 @@
+import * from "std/array"
+import * from "github.com/lens0021/testchamber/src/asserts.ab"
+
+fun assert_array_find(
+        data: [Text],
+        value: Text,
+        find_expected: Num,
+        find_all_expected: [Num]
+    ): Null? {
+    assert_eq(array_find(data, value), find_expected, "should be {find_expected}")?
+    const find_all = array_find_all(data, value)
+    assert_array_eq(find_all, find_all_expected, "should be {find_all_expected}")?
+}
+
+pub fun test_array_find(): Null? {
+    let numbers = ["zero", "one", "two", "three", "two", "one", "zero"]
+    assert_array_find(numbers, "zero", 0, [0, 6])?
+    assert_array_find(numbers, "one", 1, [1, 5])?
+    assert_array_find(numbers, "two", 2, [2, 4])?
+    assert_array_find(numbers, "three", 3, [3])?
+    assert_array_find(numbers, "four", -1, [Num])?
+}
+
+pub fun test_array_first(): Null? {
+    let numbers = ["zero", "one", "two", "three"]
+    let empty = [Text]
+    assert_eq(array_first(numbers), "zero")?
+    assert_eq(array_first(empty), "")?
+}
+
+pub fun test_array_last(): Null? {
+    let numbers = ["zero", "one", "two", "three"]
+    let empty = [Text]
+    assert_eq(array_last(numbers), "three")?
+    assert_eq(array_last(empty), "")?
+}
+
+pub fun test_array_pop(): Null? {
+    let numbers = ["zero", "one", "two", "three"]
+    let empty = [Text]
+    assert_eq(array_pop(numbers), "three")?
+    const length = len(numbers)
+    assert_eq(length, 3)?
+    assert_eq(array_pop(empty), "")?
+}
