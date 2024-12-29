@@ -21,7 +21,7 @@ import {
     echo_stderr,
     file_globstar,
     make_temp,
-} from "github.com/lens0021/amber-snippets/main/main.ab"
+} from "github.com/lens0021/amber-snippets/main.ab"
 
 pub import * from "./asserts.ab"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Written in [Amber](https://amber-lang.com/)
 # version: 0.4.0-alpha
-# date: 2024-12-28 23:15:25
+# date: 2024-12-29 10:39:22
 array_find__0_v0() {
 
 # bshchk (https://git.blek.codes/blek/bshchk)

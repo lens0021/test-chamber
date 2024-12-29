@@ -7,7 +7,7 @@ import {
 } from "std/env"
 import { file_write, file_read } from "std/fs"
 import { ends_with } from "std/text"
-import { make_temp } from "github.com/lens0021/amber-snippets/main/main.ab"
+import { make_temp } from "github.com/lens0021/amber-snippets/main.ab"
 
 fun show_diff(left, right) {
     if is_command("diff") {
