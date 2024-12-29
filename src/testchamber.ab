@@ -98,6 +98,7 @@ main(arguments) {
                 printf(colored_failed)
                 failure_msg += "---- {name} ----\n"
                 failure_msg += trust file_read(test_stdout)
+                failure_msg += trust file_read(test_stderr)
                 failure_msg += "\n"
             }
             trust $ rm {test_stdout} $
