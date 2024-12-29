@@ -38,6 +38,17 @@ pub fun assert_eq(left, right, msg = "") {
     fail 1
 }
 
+pub fun assert_array_eq(left, right, msg ="") {
+    if len(left) != len(right) {
+        echo_error("lengths are different", 0)
+        show_diff(len(left), len(right))
+        fail 1
+    }
+    for i, ele in left {
+        assert_eq(ele, right[i], msg)?
+    }
+}
+
 pub fun assert_true(actual: Bool, msg: Text = ""): Num? {
     return assert_eq(true, actual, msg)?
 }

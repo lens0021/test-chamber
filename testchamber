@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Written in [Amber](https://amber-lang.com/)
 # version: 0.4.0-alpha
-# date: 2024-12-29 10:39:22
+# date: 2024-12-29 16:01:43
 array_find__0_v0() {
 
 # bshchk (https://git.blek.codes/blek/bshchk)
@@ -284,7 +284,7 @@ Options:
 "
 __1_colored_ok="\x1b[32mok\x1b[0m"
 __2_colored_failed="\x1b[31mFAILED\x1b[0m"
-find_test_files__163_v0() {
+find_test_files__165_v0() {
     local path=$1
     dir_exists__42_v0 "${path}"
     __AF_dir_exists42_v0__40_8="$__AF_dir_exists42_v0"
@@ -292,18 +292,18 @@ find_test_files__163_v0() {
         file_globstar__139_v0 "${path}/**.ab"
         __AS=$?
         __AF_file_globstar139_v0__41_22=("${__AF_file_globstar139_v0[@]}")
-        __AF_find_test_files163_v0=("${__AF_file_globstar139_v0__41_22[@]}")
+        __AF_find_test_files165_v0=("${__AF_file_globstar139_v0__41_22[@]}")
         return 0
     fi
     file_exists__43_v0 "${path}"
     __AF_file_exists43_v0__43_8="$__AF_file_exists43_v0"
     if [ "$__AF_file_exists43_v0__43_8" != 0 ]; then
         __AMBER_ARRAY_11=("${path}")
-        __AF_find_test_files163_v0=("${__AMBER_ARRAY_11[@]}")
+        __AF_find_test_files165_v0=("${__AMBER_ARRAY_11[@]}")
         return 0
     fi
 }
-find_test_funs__164_v0() {
+find_test_funs__166_v0() {
     local path=$1
     __AMBER_ARRAY_12=()
     local items=("${__AMBER_ARRAY_12[@]}")
@@ -322,7 +322,7 @@ find_test_funs__164_v0() {
         __AMBER_ARRAY_13=("${line}")
         items+=("${__AMBER_ARRAY_13[@]}")
     done <"${path}"
-    __AF_find_test_funs164_v0=("${items[@]}")
+    __AF_find_test_funs166_v0=("${items[@]}")
     return 0
 }
 declare -r arguments=("$0" "$@")
@@ -357,12 +357,12 @@ failure_msg=""
 date_now__132_v0
 __AF_date_now132_v0__81_21="$__AF_date_now132_v0"
 started="$__AF_date_now132_v0__81_21"
-find_test_files__163_v0 "${path}"
-__AF_find_test_files163_v0__82_17=("${__AF_find_test_files163_v0[@]}")
-for file in "${__AF_find_test_files163_v0__82_17[@]}"; do
-    find_test_funs__164_v0 "${file}"
-    __AF_find_test_funs164_v0__83_21=("${__AF_find_test_funs164_v0[@]}")
-    for test in "${__AF_find_test_funs164_v0__83_21[@]}"; do
+find_test_files__165_v0 "${path}"
+__AF_find_test_files165_v0__82_17=("${__AF_find_test_files165_v0[@]}")
+for file in "${__AF_find_test_files165_v0__82_17[@]}"; do
+    find_test_funs__166_v0 "${file}"
+    __AF_find_test_funs166_v0__83_21=("${__AF_find_test_funs166_v0[@]}")
+    for test in "${__AF_find_test_funs166_v0__83_21[@]}"; do
         name="${file}::${test}"
         total=$(echo ${total} '+' 1 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
         __AMBER_ARRAY_14=("")
@@ -406,6 +406,10 @@ for file in "${__AF_find_test_files163_v0__82_17[@]}"; do
             __AS=$?
             __AF_file_read44_v0__100_38="${__AF_file_read44_v0}"
             failure_msg+="${__AF_file_read44_v0__100_38}"
+            file_read__44_v0 "${test_stderr}"
+            __AS=$?
+            __AF_file_read44_v0__101_38="${__AF_file_read44_v0}"
+            failure_msg+="${__AF_file_read44_v0__101_38}"
             failure_msg+="
 "
         fi
@@ -420,18 +424,18 @@ echo ""
 failed_count=$(echo ${total} '-' ${passed} | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
 test_result=$(if [ $(echo ${failed_count} '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then echo "${__1_colored_ok}"; else echo "${__2_colored_failed}"; fi)
 date_now__132_v0
-__AF_date_now132_v0__112_21="$__AF_date_now132_v0"
-seconds=$(echo "$__AF_date_now132_v0__112_21" '-' ${started} | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
+__AF_date_now132_v0__113_21="$__AF_date_now132_v0"
+seconds=$(echo "$__AF_date_now132_v0__113_21" '-' ${started} | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
 if [ $(echo ${failed_count} '>' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then
     __AMBER_ARRAY_18=("${failure_msg}")
     printf__109_v0 "%s" __AMBER_ARRAY_18[@]
-    __AF_printf109_v0__115_9="$__AF_printf109_v0"
-    echo "$__AF_printf109_v0__115_9" >/dev/null 2>&1
+    __AF_printf109_v0__116_9="$__AF_printf109_v0"
+    echo "$__AF_printf109_v0__116_9" >/dev/null 2>&1
     echo ""
 fi
 __AMBER_ARRAY_19=("")
 printf__109_v0 "test result: ${test_result}. ${passed} passed; ${failed_count} failed; finished in ${seconds}s
 " __AMBER_ARRAY_19[@]
-__AF_printf109_v0__119_5="$__AF_printf109_v0"
-echo "$__AF_printf109_v0__119_5" >/dev/null 2>&1
+__AF_printf109_v0__120_5="$__AF_printf109_v0"
+echo "$__AF_printf109_v0__120_5" >/dev/null 2>&1
 exit $(if [ $(echo ${failed_count} '==' 0 | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//') != 0 ]; then echo 0; else echo 1; fi)
